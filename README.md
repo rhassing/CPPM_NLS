@@ -19,3 +19,7 @@ Add your Syslog server
 Add your ClearPass servers
 In "Filter and Columns" choose RADIUS Failed Authentications
 
+In Nagios Logserver go to: Configure => Global Config => Filters and add a new Custom Filter
+Paste the NLS-inputfilter.txt here.
+
+In Nagios Logserver go to: Dashboards, click on the "Load icon" => Advanced => Import Dashboard from file and choose the local file ClearPass-Radius.json
