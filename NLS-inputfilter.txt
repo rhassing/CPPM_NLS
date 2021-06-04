@@ -1,0 +1,35 @@
+if [host] == '<ip address CPPM1' or [host] == 'ip address CPPM2' {
+   mutate {
+        replace => [ 'type', 'ClearPass' ]
+   }
+}
+if [type] == 'ClearPass' and [message] =~ /radius-failed.*/ {
+   grok {
+        match => [ 'message', 'radius-failed %{SYSLOGPROG:syslog_index} 1 0 %{GREEDYDATA:cppmdata}' ]
+   }
+   mutate {
+        replace => [ 'type', 'clearpass-failed' ]
+   }
+}
+if [type] == 'clearpass-failed' {
+        kv {
+        source => "cppmdata"
+        field_split => ","
+        value_split => "="
+      }
+}
+if [type] == 'ClearPass' and [message] =~ /radius.*/ {
+   grok {
+        match => [ 'message', 'radius %{SYSLOGPROG:syslog_index} 1 0 %{GREEDYDATA:cppmdata}' ]
+   }
+   mutate {
+        replace => [ 'type', 'clearpass' ]
+   }
+}
+if [type] == 'clearpass' {
+        kv {
+        source => "cppmdata"
+        field_split => ","
+        value_split => "="
+      }
+}
